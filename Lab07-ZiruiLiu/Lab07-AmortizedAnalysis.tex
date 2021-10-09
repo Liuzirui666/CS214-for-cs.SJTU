@@ -1,0 +1,211 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\usepackage{array}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab07-Amortized Analysis}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao \& Lei Wang, Spring 2021.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Yihao Xie. }
+
+\footnotesize{\color{blue}$*$ Name:ZIrui Liu  \quad Student ID:519021910343 \quad Email: L.prime@sjtu.edu.cn}
+\end{center}
+\begin{enumerate}
+	\item Suppose we perform a sequence of n operations on a data structure in which the $i$ th 		operation costs $i$ if $i$ is an exact power of 2, and 1 otherwise. Use an accounting method to determine the amortized cost per operation.
+	
+	\begin{solution}
+	In the sequence which has $n$ operations, there are $\lfloor \log_2{n} \rfloor +1$ numbers which are power of $2$. These numbers have total time cost of $2^{ \lfloor \log_2{n} \rfloor +1 } -1$, which approximately is $2*n$. The rest of the numbers together have a time cost of $n- \lfloor \log_2{n} \rfloor -1$, which approximately is $n$. So the total time cost is about $3*n$, which means amortized cost is $O\left(1\right)$.
+	
+	\end{solution}
+	
+
+	\item Consider an ordinary \textbf{binary min-heap} data structure with $n$ elements supporting
+the instructions \textsc{Insert} and \textsc{Extract-Min} in $O(\log n)$ worst-case time. Give a
+potential function $\Phi$ such that the amortized cost of \textsc{Insert} is $O(\log n)$ and the
+amortized cost of \textsc{Extract-Min} is $O(1)$, and show that it works.
+
+    \begin{solution}
+	We assume that $D_i$ to be the state of \textbf{min-heap} after $i$-th operation. We also let $n_i$ to be the size of $D_i$ after $i$-th operation. If the $i-1$-th operation is \textsc{Insert}, then $n_i = n_{i-1}+1$. On the other hand, if the $i-1$-th operation is \textsc{Extract-Min}, then $n_i = n_{i-1}-1$. We shall also define $a\left(i\right)$ to be parameter function, for \textsc{Extract-Min}, we define $b_1\left(i\right)$ to satisfy that:\\
+	\begin{equation}
+	T_{Extract-Min \left(i\right) } \leq b_1\left(i\right) * \ln i 
+	\end{equation}
+	
+	for \textsc{Insert}, we define $b_2\left(i\right)$ to satisfy that:\\
+	\begin{equation}
+	T_{Insert \left(i\right) } \leq b_2\left(i\right) * \ln i 
+	\end{equation}
+	
+	We also define that:\\
+	\begin{equation}
+	a\left(i\right)=max \left\{ b_1\left(i\right),b_2\left(i\right) \right\}
+	%T_{Extract-Min \left(i\right) } \leq b_1\left(i\right) * \ln k 
+	\end{equation}
+	
+	So inclusively we have:\\
+	\begin{equation}
+	T \left(i\right) \leq a\left(i\right) * \ln i 
+	\end{equation}
+	
+	Also, we can always define $a\left(i\right)$ to be in non-increasing order.Then we can finally get:\\
+	\begin{equation}
+	    \phi \left(D_i\right)=
+	    \begin{cases}
+	    0, & i=0 \\
+	    \sum_{m=1}^{n_i} a\left(m\right) \ln m, & i>0 \\    
+	    \end{cases}
+	    
+	\end{equation}
+	
+	Then we will calculate the amortized costs of \textsc{Extract-Min} and \textsc{Insert} to prove the correctness. \\
+	For \textsc{Insert} operation:\\
+	Since $n_i = n_{i-1}+1$, 
+	\begin{equation}
+	    c_i \leq a\left(n_{i-1}\right) * \ln n_{i-1} \leq a\left(n_i\right) * \ln n_i
+	\end{equation}
+	
+	\begin{equation}
+	\begin{aligned}
+	    \hat{c_i} &= c_i + \phi \left(D_i\right) - \phi \left(D_{i-1}\right) \\
+	       &= c_i+\sum_{k=1}^{n_i} a\left(k\right) \ln k - \sum_{k=1}^{n_{i-1}} a\left(k\right) \ln k \\
+	       &=c_i+\sum_{k=1}^{n_i} a\left(k\right) \ln k - \sum_{k=1}^{n_{i}-1} a\left(k\right) \ln k \\
+	       &=c_i + a\left(n_i\right) * \ln n_i \\
+	       &\leq a\left(n_{i-1}\right) * \ln n_{i-1} +a\left(n_i\right) * \ln n_i \\
+	       &\leq 2*a\left(n_i\right) * \ln n_i \\
+	       &=O\left(\ln n_i \right) \\
+	\end{aligned}
+	\end{equation}
+	
+	For \textsc{Extract-Min} operation:\\
+	Since $n_i = n_{i-1}-1$, 
+	\begin{equation}
+	    c_i \leq a\left(n_{i-1}\right) * \ln n_{i-1}
+	\end{equation}
+	
+	\begin{equation}
+	\begin{aligned}
+	    \hat{c_i} &= c_i + \phi \left(D_i\right) - \phi \left(D_{i-1}\right) \\
+	       &= c_i+\sum_{k=1}^{n_i} a\left(k\right) \ln k - \sum_{k=1}^{n_{i-1}} a\left(k\right) \ln k \\
+	       &=c_i+\sum_{k=1}^{n_i} a\left(k\right) \ln k - \sum_{k=1}^{n_{i}+1} a\left(k\right) \ln k \\
+	       &=c_i - a\left(n_i+1\right) * \ln \left(n_i+1\right) \\
+	       &\leq a\left(n_{i-1}\right) * \ln n_{i-1} - a\left(n_i+1\right) * \ln \left( n_i+1\right) \\
+	       &= a\left(n_{i-1}\right) * \ln n_{i-1} -a\left(n_{i-1}\right) * \ln n_{i-1} \\
+	       &=O\left(1 \right) \\
+	\end{aligned}
+	\end{equation}
+	
+	So the $\phi $ created can work.
+	
+	
+    %        f(n) =
+    %        \begin{cases} 
+    %        n/2,  & \mbox{if }n\mbox{ is even} \\
+    %        3n+1, & \mbox{if }n\mbox{ is odd}
+    %        \end{cases}
+	
+	%\sum_{k=1}^N k^2
+	
+	\end{solution}
+    
+	
+	\item Assume we have a set of arrays $A_0, A_1, A_2,\cdots$, where the $i^{th}$ array $A_i$ has a length of $2^i$. Whenever an element is inserted into the arrays, we always intend to insert it into $A_0$. If $A_0$ is full then we pop the element in $A_0$ off and insert it with the new element into $A_{1}$. (Thus, if $A_{i}$ is already full, we recursively pop all its members off and insert them with the elements popped from $A_0,...,A_{i-1}$ and the new element into $A_{i+1}$ until we find an empty array to store the elements.) An illustrative example is shown in Figure \ref{Fig-MultiArray}. Inserting or popping an element take $O(1)$ time.
+
+	\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Fig-MultiArray.pdf}
+	\caption{An example of making room for one new element in the set of arrays.}
+	\label{Fig-MultiArray}
+	\end{figure}
+
+    \begin{enumerate}
+        \item In the worst case, how long does it take to add a new element into the set of arrays containing $n$ elements?
+        \item Prove that the amortized cost of adding an element is $O(\log n)$ by \emph{Aggregation Analysis}.
+        \item If each array $A_i$ is required to be sorted but elements in different arrays have no relationship with each other, how long does it take in the worst case to search an element in the arrays containing $n$ elements? 
+\item What is the amortized cost of adding an element in the case of (c) if the comparison between two elements also takes $O(1)$ time?
+    \end{enumerate}
+	
+	\begin{solution}
+	(a):\\
+	If we assume each small step to take up $1$ unit of time, it would be $n+1$ units that we needed. The worst case would be that already having $n$ elements filling up previous arrays, so it would take $n$ time to move these elements to the next array.Then we add the new element, making the whole time to $n+1$ units, which in another way is $O\left(n\right)$.
+	
+	
+	(b):\\
+	We assume that the time needed for the first $n$ elements is $T\left(n\right)$. For $n=2^k$, considering $\frac{n}{2}$, if we add the next element, its time cost along with the first $\frac{n}{2} -1$ elements,  would be exactly $T\left( \frac{n}{2} \right)$.But in this time these $\frac{n}{2}$ elements have already been moved to the array we want them to be in. And the time cost for moving the next $\frac{n}{2}$ filling up an array would be $\frac{n}{2}$. Then we should consider moving these $\frac{n}{2}$ elements to the next array, which would cost another $\frac{n}{2}$ time. So the equation would be like:\\
+	\begin{equation}
+	    T\left( n \right) = 2* T\left( \frac{n}{2} \right) +\frac{n}{2}
+	\end{equation}
+	Then we apply the Master Theory, for $a=2$ , $b=2$ , $f\left(n\right)=\frac{n}{2}$, we have $T\left( n \right)= O\left(n*\log n\right)$. Then we apply \emph{Aggregation Analysis}, the amortized cost of adding an element is $O(\log n)$, calculated by $\frac{ T\left(n\right) }{n}$.
+	
+	(c):\\
+	It would be $ \left( \log n \right)^2$. The analysis is as follows:\\
+	In the worst case, we would have to look through every array to search for the element $x$ we want. And since every array has no relationship with another, so in every array with $k$ elements, we must spent $\log k$ time to search this array. So in conclusion, we need $ \left( \log n \right)^2$ time, considering all the arrays.
+	
+	
+	(d):\\
+	Considering when currently the arrays $A_1$,$A_2$,$A_3$ $\cdots$ $A_{i-1}$ are full, and we transform all their elements to $A_i$, it would cost time:\\
+	\begin{equation}
+	    \sum_{k=0}^{i-1} {2^k + O\left(2^{k+1}-1\right)}
+	\end{equation}
+	where in this equation $2^k$ is the time complexity we needed for popping $A_k$, and $O\left(2^{k+1}-1\right)$ is the time we needed for merging sort of two sorted arrays.\\
+	Adding this equation together, we can get that \\
+	\begin{equation}
+	    \sum_{k=0}^{i-1} {2^k + O\left(2^{k+1}-1\right)} \\
+	    &=O\left(2^i\right) \\
+	    &=O\left(n\right) \\
+	\end{equation}
+	Dividing this time by $n$, we have constant level of time complexity. So considering what we have got in $\left(b\right)$, we can conclude that the amortized cost of adding an element is still $O\left(\log n\right)$.
+	
+	
+	
+	\end{solution}
+	
+	
+\end{enumerate}
+
+
+
+\textbf{Remark:} Please include your .pdf, .tex files for uploading with standard file names.
+
+
+%========================================================================
+\end{document}

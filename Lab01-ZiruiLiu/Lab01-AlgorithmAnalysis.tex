@@ -1,0 +1,296 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\usepackage{threeparttable}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab01-Algorithm Analysis}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2021.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Haolin Zhou. Also please use English in homework.}
+
+% Please write down your name, student id and email.
+\footnotesize{\color{blue}$*$ Name: Zirui Liu  \quad Student ID:519021910343 \quad Email: L.prime@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+
+
+\item \textit{Complexity Analysis.} Please analyze the time and space complexity of Alg.~\ref{Alg-quicksort} and Alg.~\ref{Alg-cocktailsort}. \par
+
+\begin{minipage}[t]{0.45\textwidth}
+	\begin{algorithm}[H]
+		\KwIn{An array $A[1,\cdots,n]$}
+		\KwOut{$A[1,\cdots,n]$ sorted nondecreasingly}
+		
+		\BlankLine
+		\caption{QuickSort}\label{Alg-quicksort}
+		
+		%\If{$n \le 1$}{
+		%  \Return\;
+		%}
+		
+		$pivot \leftarrow A[n]$; $i \leftarrow 1$\;
+		\For{$j \leftarrow 1$ \KwTo $n-1$}{
+			\If{$A[j] < pivot$}{
+				swap $A[i]$ and $A[j]$\;
+				$i \leftarrow i+1$\;
+			}
+		}
+		
+		swap $A[i]$ and $A[n]$\;
+		\lIf{$i>1$}{$\operatorname{QuickSort}(A[1,\cdots,i-1])$}
+		\lIf{$i<n$}{$\operatorname{QuickSort}(A[i+1,\cdots,n])$}
+	\end{algorithm}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\begin{algorithm}[H]
+\KwIn{An array $A[1,\cdots,n]$}
+\KwOut{$A[1,\cdots,n]$ sorted nonincreasingly}
+\BlankLine
+\caption{CocktailSort}
+\label{Alg-cocktailsort}
+\BlankLine
+	$i\leftarrow 1;$ $j\leftarrow n;$$sorted\leftarrow false$\;
+	\While{\textbf{not} sorted}{
+		$sorted \leftarrow true$\;
+		\For{$k\leftarrow i$ \textbf{to} $j-1$}{
+			\If{$A[k] < A[k+1]$}{
+				swap $A[k]$ and $A[k+1]$\;
+				$sorted\leftarrow false$\;
+			}
+		}
+		$j\leftarrow j-1$\;
+		
+
+		\For{$k\leftarrow j$ \textbf{downto} $i+1$}{
+			\If{$A[k-1] < A[k]$}{
+				swap $A[k-1]$ and $A[k]$\;
+				$sorted\leftarrow false$\;
+			}
+		}
+		$i\leftarrow i+1$\;
+	}
+\end{algorithm}
+\end{minipage}
+
+\begin{enumerate}
+	 
+\item Fill in the blanks and \textbf{explain} your answers. You need to answer when the best case and the worst case happen. 
+\begin{table}[!h]
+
+\label{Tab-compare}
+	\centering
+	\begin{threeparttable}
+	\begin{tabular}{c|c| c }
+		\toprule[2pt]
+		\textbf{Algorithm} & \textbf{Time Complexity}\tnote{1} & \textbf{Space Complexity} \\
+		\hline
+		\hline
+		$QuickSort$ & $\Theta\left(n\log n\right)$ $\Theta\left(n\log n\right)$ $\Theta\left(n^2\right)$ & $\Theta\left(\log n\right)$ \\
+
+		$CocktailSort$ & $\Theta\left(n\right)$ $\Theta\left(n^2\right)$ $\Theta\left(n^2\right)$ & $\Theta\left(1\right)$  \\
+		\bottomrule[2pt]
+
+
+	\end{tabular}
+    \begin{tablenotes}
+    	\footnotesize
+    	\item[1] The response order can be given in \emph{best}, \emph{average}, and \emph{worst}.
+    \end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+\Big{\textbf{For Quick Sort Time Analyse:}}\vspace{1mm}\\
+
+\textbf{Best Case:}\\
+Among the most balanced divisions PARTITION can do, both sub-questions have the size no-bigger than $n/2$. Since one of the sub-questions has the size of $\lfloor n/2 \rfloor$, and the other one has the size of $\lceil n/2 \rceil-1$. In this case, quick sort has the following recursive: 
+\begin{equation}
+T\left(n\right) \leq 2T\left(n/2\right)+\Theta\left(n\right)
+\end{equation}
+So we can conclude that 
+\begin{equation}
+T\left(n\right) = O\left(n\lg n \right)
+\end{equation}
+
+\textbf{Worst Case:}\\
+The worst situation of quick sort happens when the two parts of the division separately include $n-1$ elements and $1$ element. Since it's the worst situation, we can assume that this unbalanced division happens in every recursive process. The time price for this division is $\Theta\left(n\right)$ every time. After we do a recursive process for an array whose size is 0, we can get $T\left(0\right)=\Theta\left(1\right)$. So the time price for this situation can be presented as:
+\begin{equation}
+    T\left(n\right) = T\left(n-1\right) + T\left(0\right) + \Theta\left(n\right) = T\left(n-1\right) + \Theta\left(n\right)
+\end{equation}
+After we added the price of this equation recursively, we can conclude that the time price for quick sort in the worst situation can be $\Theta\left(n^2\right)$
+
+
+\Big{\textbf{For Cocktail Sort Time Analyse:}}\vspace{1mm}\\
+
+\textbf{Best Case:}\\
+The best situation of Cocktail sort happens when the original array has already been placed nonincreasingly, in this case, the whole sorting process rakes only $2n-3$ time units,which gives us the time price of $\Theta\left(n\right)$. 
+
+\textbf{Worst Case:}\\
+When the original array is placed nondecreasingly, we have the worst situation with the time price of $\Theta\left(n^2\right)$
+
+
+\item For Alg.~\ref{Alg-quicksort}, how to modify the algorithm to achieve the same expected performance as the \textbf{average} case when the \textbf{worst} case happens?
+\end{enumerate} 
+    \begin{solution}
+       %Uncomment this block to write your proof.
+       We can apply the modification in two different parts. In the first part, we change the way we choose the pivot. Instead of choosing the fixed number or choose randomly, we apply the median-of-three method. We choose the left end ,the right end and the middle three elements to eliminate some worst cases of original arrays, thus reducing 14\% of comparison times. \\
+       In the second part, we apply the following methods to further improve the performance. \\
+       (1) When the length of the sequence to be sorted is split to a certain size, we switch to insertion sort. The reason is that for very small or partly organized arrays, the efficiency of quick sort is no better than insertion sort. The specific length of array is around 5 to 20. We choose the best universal length to be 10, which avoids some harmful degradation scenarios.
+       (2) At the end of a split, elements equal to the key can be clustered together, so that the next split does not need to split the elements equal to the key again. In the actual process, there will be two steps. During the division process, the elements equal to key are put into the two ends of the array for the first step.
+       The second step is to move the elements equal to key around the pivot after the division is finished. The reason why this method is so effective is that in an array, if there are equal elements, then it can reduce a lot of redundant divisions. This is particularly obvious in repeated arrays with so many same elements.\\
+       After we apply the upper methods, the quick sort achieved better time efficiency even in the worst situations. 
+    \end{solution}
+
+\item \textit{Growth Analysis.} Rank the following functions by order of growth with brief explanations: that is, find an arrangement $g_1, g_2, \ldots , g_{15}$ of the functions $g_1 = \Omega(g_2), g_2 = \Omega(g_3), \ldots, g_{14} = \Omega(g_{15})$.  Partition your list into equivalence classes such that functions $f(n)$ and $g(n)$ are in the same class if and only if $f(n) = \Theta(g(n))$. Use symbols ``$=$'' and ``$\prec$'' to order these functions appropriately. Here $\log n$ stands for $\ln n$.
+$$
+\begin{array}{ccccc}
+	1 \quad & \quad n \quad & \quad \log n \quad & \quad \log (\log n) \quad & \quad n \log n \\
+	\log_4 n \quad & \quad 2^n \quad & \quad 4^n \quad & \quad 2^{\log n} \quad & \quad 2^{2^n} \\
+	\log (n!) \quad & \quad n! \quad & \quad (2n)! \quad & \quad  n^{1/2} \quad & \quad n^2 \\
+\end{array}
+$$
+    \begin{solution}
+    	$1$ $\prec$ $\log (\log n)$ $\prec$ $\log_4 n$ $=$ $\log n$ $\prec$ $n^{1/2}$
+		$\prec$ $2^{\log n}$ $\prec$ $n$ $\prec$ $\log (n!)$ = $n \log n$ 
+		$\prec$ $n^2$ $\prec$ $2^n$ $\prec$ $4^n$ $\prec$ $n!$ $\prec$ $(2n)!$ $\prec$ $2^{2^n}$ 
+    \end{solution}
+    
+    \begin{proof}
+    The upper formula can be proofed below: \\
+        for $1 < \log (\log n) $ , we make 2 to be the base number for two times:
+    \begin{equation}
+        \lim_{n \to \infty} \frac{4}{n} = 0
+    \end{equation}
+    
+        for $\log (\log n) < \log_4 n$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{\log (\log n)}{\log_4 n} = \lim_{n \to \infty} \frac{2*\log_2 n}{n} = 0
+    \end{equation}
+    
+        for $\log_4 n = \log n $ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{\log_4}{\log n} = \frac{1}{2}
+    \end{equation}
+    
+        for $\log n < n^{1/2}$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{\log n}{n^{1/2}} = 0
+    \end{equation}
+    
+        for $n^{1/2} < 2^{\log n}$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{n^{1/2}}{n} = 0
+    \end{equation}
+    
+        for $2^{\log n} < n$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{2^{\log n}}{n} = 0
+    \end{equation}
+    
+        for $n < \log (n!)$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{n}{\log (n!)} = 0
+    \end{equation}
+    
+        for $\log (n!) = n \log n$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{\log(n!)}{n \log n} = 1
+    \end{equation}
+    
+        for $n \log n < n^2$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{n \log n}{n^2} =  \lim_{n \to \infty} \frac{\log n}{n} = 0
+    \end{equation}
+    
+        for $n^2 < 2^n$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{n^2}{2^n} = 0
+    \end{equation}
+    
+        for $2^n < 4^n$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{2^n}{4^n} =  \lim_{n \to \infty} \frac{1}{2^n} = 0
+    \end{equation}
+    
+        for $4^n < n!$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{4^n}{n!} \leq \lim_{n \to \infty} \frac{4^n}{4!*5*6*...*n} = 0
+    \end{equation}
+    
+        for $n! < (2n)!$ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{n!}{(2n)!} = \lim_{n \to \infty} \frac{1}{(n+1)*(n+2)*...(2n)} = 0
+    \end{equation}
+    
+        for $(2n)! < 2^{2^n} $ :
+    \begin{equation}
+        \lim_{n \to \infty} \frac{(2n)!}{2^{2^n}} = 0
+    \end{equation}
+    
+    \end{proof}
+
+
+\end{enumerate}
+
+\vspace{20pt}
+
+\textbf{Remark:} You need to include your .pdf and .tex files in your uploaded .rar or .zip file.
+
+\newpage
+
+
+\begin{appendices}
+    These are part of our codes.
+    \section{First appendix}
+    extcolor[rgb]{0.98,0.00,0.00}{\textbf{Input c++ source1:}}
+    \lstinputlisting[language=c++]{./test.cpp}
+    
+    \t
+    
+\end{appendices}
+
+
+%========================================================================
+\end{document}

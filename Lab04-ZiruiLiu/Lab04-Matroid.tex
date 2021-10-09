@@ -1,0 +1,255 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\usepackage{float}
+%\usepacksge{amssymb}
+\usepackage{amsmath}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab04-Matroid}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2021.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Haolin Zhou.}
+
+% Please write down your name, student id and email.
+\footnotesize{\color{blue}$*$ Name:Zirui Liu  \quad Student ID:519021910343 \quad Email: L.prime@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+\item \textit{Property of Matroid.} 
+\begin{enumerate}
+	\item
+	Consider an arbitrary undirected graph $ G=(V,E) $. Let us define $ M_{G}=(S,C) $ where $ S=E $ and $ C=\left\{I \subseteq E \mid\left(V, E \backslash I\right) \text { is connected}\right\} $. Prove that $ M_{G} $ is a \textbf{matroid}.\par
+	    \begin{proof}
+	        %Uncomment this block to write your solution.
+	        To prove that $M_G$ is a matroid, it has to satisfy those three conditions. For the first,$S=E$, and obviously $S$ is not empty. For the second, since $\left(V, E \backslash I\right) \text {is connected} $, so $\left(V, E\right)$ must be connected too. Since adding more edges to a graph that is already connected would not make it disconnected, for any $B \in C$, and $A \subseteq B$, we have $A \in C$. For the third, for any $A \in C, B \in C, |A| < |B|$, similar to the way we prove the second condition, since $C$ can be defined as " the power set featuring all the edges as elements, for $X \in B-A $, we can always have $A \cup \left\{ X \right\} \in C$. So in conclusion, $ M_{G} $ is a \textbf{matroid}. 
+	        
+	    \end{proof}
+	\item
+	Given a set $A$ containing $n$ real numbers, and you are allowed to choose $k$ numbers from $A$. The bigger the sum of the chosen numbers is, the better. What is your algorithm to choose? Prove its correctness using \textbf{matroid}.\par
+	\textbf{Remark:} Denote $\mathbf{C}$ be the collection of all subsets of $A$ that contains no more than $k$ elements. Try to prove $(A,\mathbf{C})$ is a matroid.\par
+	    \begin{solution}
+	        %Uncomment this block to write your solution.
+	        The solution is as following: We sorted the $n$ numbers, then we choose from them from the biggest to the smallest until we have chosen $k$ numbers. These $k$ numbers are those we wish to find. Next I will prove the correctness of the greedy algorithm. 
+	        
+	        We suppose that $M = \left(U, F\right)$ is a weighted matrioid and that $U$ is sorted into monotonically decreasing order. We also assume that $ \omega \left( x \right)$ represents the weight of element $x$. Then we let $x$ to be the biggest element of $U$ such that $\left\{ x \right\} \in F $. If any such $x$ exists, then there exists an optimal subset $A$ of $U$ containing $x$, thus the optimizism of the greedy algorithm can be proved. The proof is as following. 
+	        
+	        If no such $x$ exists, then the only independent subset is the empty set $ \text {like} \left( F = \left\{ \varnothing \right\}\right)$ then the question is meaningless. We assume that $F$ contains another non-empty optimal subset
+            $B$, then there exists two possibilities: $x \in B $ or $x \notin B$. In the first case, we can simply make $A = B$ to prove the correctness. In the second case, we 
+            assume that $x \notin B$.
+            Then we assume there exists $y \in B$ so that $\omega\left(y\right) > \omega\left(x\right)$. Since $y \in B$ and $B \in F$ so we can get $\left\{y\right\} \in F$.
+            If $\omega\left(y\right) > \omega\left(x\right)$, then $y$ would be the first element of $U$, making a contradiction with our original assumption.
+
+            So, $ \forall y \in B, \omega\left(x\right) \ge \omega\left(y\right)$.
+            We can now construct a set $A \in F$ such that $x \in A,|A| =|B|$, and $\omega\left(A\right) \ge \omega\left(B\right)$. We then use the second characteristic of \textbf {Matroid}, we can always find an element of $B$ to add to $A$ without destructing the independence.
+            We can repeat this process until we get $|A| =|B|$. Then by construction we have $A = B - \left\{y\right\} \cup \left\{x\right\} $ for $y \in B$. Then since $\omega\left(A\right) \ge \omega\left(B\right)$,
+            we have $\omega\left(A\right) = \omega\left(B\right) - \omega\left(y\right) + \omega\left(x\right) \ge \omega\left(B\right)$. 
+            Since $B$ is optimal, then $A$ containing $x$ is also optimal. So the correctness of our algorithm is proved.
+
+	        
+	
+	    \end{solution}
+\newpage
+
+\end{enumerate}
+\item \textit{Unit-time Task Scheduling Problem.} Consider the instance of the \textbf{Unit-time Task Scheduling Problem} given in class. 
+    \begin{enumerate}
+        \item Each penalty $\omega_{i}$ is replaced by $80-\omega_{i}$. The modified instance is given in Tab.~\ref{tab:1}. Give the final schedule and the optimal penalty of the new instance using Greedy-MAX.
+		\begin{table}[H]
+			\setlength{\abovecaptionskip}{0.cm}
+			\setlength{\belowcaptionskip}{0.5cm}
+			\centering
+			\caption{Task}
+			\label{tab:1}			
+			\begin{tabular}{|c|ccccccc|}
+				\hline
+				$ a_{i} $&1&2&3&4&5&6&7\\
+				\hline
+				$ d_{i} $&4&2&4&3&1&4&6\\
+                \hline
+                $ \omega_{i} $&10&20&30&40&50&60&70\\
+				\hline
+			\end{tabular}
+		\end{table}
+	        \begin{solution}
+	            %Uncomment this block to write your solution.
+	            The optimal penalty is 30 for the following schedule: $  a_{5}\Rightarrow a_{6}\Rightarrow a_{4}\Rightarrow a_{3}\Rightarrow a_{7}\Rightarrow a_{2}\Rightarrow a_{1}   $
+	        \end{solution}
+        \item Show how to determine in time $O(|A|)$ whether or not a given set $A$ of tasks is independent. (\textbf{Hint}: You can use the lemma of equivalence given in class)
+ 	        \begin{solution}
+                %Uncomment this block to write your solution.
+                To determine in time $O(|A|)$ whether or not a given set $A$ of tasks is independent, we can use the lemma of equivalence. That is to say, we need to prove that the tasks in $A$ are scheduled in order of monotonicallly increasing deadlines. So what we have to do is to check if all the tasks in $A$ whether their deadline time is in monotonicallly increasing order or not.
+                On the other hand, we can solver the problem by using the lemma: set $A$ is independent if and only if for any $t=0,1,2,...n$, $N_t\left(A\right) \leq t$. The pseudo code is as follows:
+        \begin{algorithm}[H]
+		\KwIn{An array $a[1,\cdots,n]$}
+		\KwOut{a bool value, indicating $A$ is independent or not.}
+		
+		\BlankLine
+		\caption{}\label{Algorithm}
+		
+		
+% 		sort(x,x+n)\;
+%         int start=x[0]\;
+%         int end=start+k\;
+%         int index=0,num=0\;
+%         \While{index<=n-1}{
+%             \While{x[index]<=end}{
+%                 index++\;        
+%             }
+%             num++\;
+%             start=x[index]\;
+%             end=start+k\;
+%         }
+%         return num\;
+        
+        \For{$i \leftarrow 1$ \KwTo $n$}{
+        $a\left[i\right] \leftarrow a\left[i\right]+1$\;
+        }
+        $Nt$ \leftarrow $0$\;
+        
+        \For{$i \leftarrow 1$ \KwTo $n$}{
+        $N \leftarrow Nt+a\left[i\right]$\;
+            \If{$Nt>i$}{
+            return $false$\;
+            }
+        }
+        return $true$;
+        
+            		
+% 		$pivot \leftarrow A[n]$; $i \leftarrow 1$\;
+% 		\For{$j \leftarrow 1$ \KwTo $n-1$}{
+% 			\If{$A[j] < pivot$}{
+% 				swap $A[i]$ and $A[j]$\;
+% 				$i \leftarrow i+1$\;
+% 			}
+% 		}
+		
+% 		swap $A[i]$ and $A[n]$\;
+% 		\lIf{$i>1$}{$\operatorname{QuickSort}(A[1,\cdots,i-1])$}
+% 		\lIf{$i<n$}{$\operatorname{QuickSort}(A[i+1,\cdots,n])$}
+		
+		
+	    \end{algorithm}
+
+            \end{solution}
+    \end{enumerate}
+
+\item \textit{MAX-3DM.} Let $X$, $Y$, $Z$ be three sets. We say two triples $\left(x_{1}, y_{1}, z_{1}\right)$ and $\left(x_{2}, y_{2}, z_{2}\right)$ in $X \times Y \times Z$ are \textit{disjoint} if $x_{1} \neq x_{2}$, $y_{1} \neq y_{2},$ and $z_{1} \neq z_{2}$. Consider the following problem:
+    
+    \begin{definition}[MAX-3DM] 
+        Given three disjoint sets $X$, $Y$, $Z$ and a non-negative weight function $c(\cdot)$ on all triples in $X \times Y \times Z$, \textbf{Maximum 3-Dimensional Matching} (MAX-3DM) is to find a collection $\mathcal{F}$ of disjoint triples with maximum total weight.
+    \end{definition}
+
+    \begin{enumerate}
+    	\item Let $D = X \times Y \times Z$. Define independent sets for MAX-3DM.
+    	\item Write a greedy algorithm based on Greedy-MAX in the form of \emph{pseudo code}. \label{Item-Greedy}
+    	\item Give a counter-example to show that your Greedy-MAX algorithm in Q.~\ref{Item-Greedy} is not optimal.
+    	\item Show that: $\max\limits_{F \subseteq D} \frac{v(F)}{u(F)} \leq 3$. {\color{blue}(Hint: you may need Theorem~\ref{Thm-Intersect} for this subquestion.)} 
+    	    \begin{solution}
+    	        %Uncomment this block to write your proof.
+    	        \\(1):\\
+    	        We define that: $\forall \left(x_i,y_i,z_i\right) and \left(x_j,y_j,z_j\right) \in \mathcal{F}, \left(x_i,y_i,z_i\right) and \left(x_j,y_j,z_j\right) $ are disjoint. Then we have this $\mathcal{F}$ to be independent.
+    	        \\(2):\\
+    	We define $\left(x_i,y_i,z_i\right)$ as $a_i$\\
+    	\begin{algorithm}[H]
+		\KwIn{An array $a[1,\cdots,n]$}
+		\KwOut{An array $A$, indicating the result we want.}
+		
+		\BlankLine
+		\caption{}\label{Algorithm}
+        sort $\mathcal{F}$ by $c$ in non-increasing order\;
+        $A \leftarrow \varnothing$\;
+        \For{$i \leftarrow 1$ \KwTo $n$}{
+            \If{$A \cup \left\{a_i\right\} \in \mathcal{F}$}{
+             $A \leftarrow A \cup \left\{d_i\right\}$\;
+            }
+        }
+        return $A$
+        
+            		
+% 		$pivot \leftarrow A[n]$; $i \leftarrow 1$\;
+% 		\For{$j \leftarrow 1$ \KwTo $n-1$}{
+% 			\If{$A[j] < pivot$}{
+% 				swap $A[i]$ and $A[j]$\;
+% 				$i \leftarrow i+1$\;
+% 			}
+% 		}
+		
+% 		swap $A[i]$ and $A[n]$\;
+% 		\lIf{$i>1$}{$\operatorname{QuickSort}(A[1,\cdots,i-1])$}
+% 		\lIf{$i<n$}{$\operatorname{QuickSort}(A[i+1,\cdots,n])$}
+		
+		
+	    \end{algorithm}
+    	        
+    	        \\(3):\\
+    	        We give that: 
+    	        $a_1 = \left(x_1,y_1,z_1\right) = \left(a,b,c\right)$, having the weight of $10$.
+    	        $a_2 = \left(x_2,y_2,z_2\right) = \left(a,e,f\right)$, having the weight of $9$.
+    	        $a_3 = \left(x_3,y_3,z_3\right) = \left(g,b,k\right)$, having the weight of $8$.
+    	        for any other $a_i$, their total weight conbined is less than $5$. By the greedy algorithm we should choose $a_1$ since it has the largest weight, but the best solution is choosing $a_1$, (whether we consider other elements does not matter), but the best choice is choosing $a_2$ and $a_3$.
+    	        
+    	        \\(4):\\ %   \mathcal{I}_{1}
+    	        According to $Theorem 1$, we can transform the question to proving that $(E, \mathcal{I}_{i})$ for $i=1,2,3$ are  \textbf{matroids}. We start by constructing three sets for $\mathcal{I}_{i}$.\\
+    	        $\mathcal{I}_{1}$: $\forall \left(x_i,y_i,z_i\right) and \left(x_j,y_j,z_j\right) \in E$, $x_i \neq x_j$.\\
+    	       $\mathcal{I}_{2}$: $\forall \left(x_i,y_i,z_i\right) and \left(x_j,y_j,z_j\right) \in E$, $y_i \neq y_j$.   \\  	            	        $\mathcal{I}_{3}$: $\forall \left(x_i,y_i,z_i\right) and \left(x_j,y_j,z_j\right) \in E$, $z_i \neq z_j$.\\
+    	       And $\textbf{\mathcal{I}}=\bigcap_{i=1}^{k} \mathcal{I}_{i}$.\\
+    	       $\textbf{Heredity:}$\\
+    	       It is easy to understand that the heredity can always be satisfied.\\
+    	       $\textbf{Exchange Property:}$\\
+    	       For $A,B \subseteq \mathcal{I}_{1}$, $|A| < |B|$, there exist $a_i = \left(x_i,y_i,z_i\right) \in B-A$, considering that $\mathcal{I}_{1}$: $\forall \left(x_i,y_i,z_i\right) and \left(x_j,y_j,z_j\right) \in E$, $x_i \neq x_j$, so $ \forall \left(x_j,y_j,z_j\right) \in A$, $x_i \neq x_j$, so $A\cup \left\{a_i\right\} \in \mathcal{I}_{1}$. Thus the exchange property for
+    	       $\left(E, \mathcal{I}_{1}\right)$ is proved. The same as $\left(E, \mathcal{I}_{2}\right)$ and $\left(E, \mathcal{I}_{3}\right)$ by using $y_i$ and $z_i$. So in conclusion, $(E, \mathcal{I}_{i})$ for $i=1,2,3$ are  \textbf{matroids}, so $\max\limits_{F \subseteq D} \frac{v(F)}{u(F)} \leq 3$. 
+    	        
+    	    \end{solution}
+    \end{enumerate}
+    \begin{theorem} \label{Thm-Intersect}
+        Suppose an independent system $(E, \mathcal{I})$ is the intersection of $k$ matroids $\left(E, \mathcal{I}_{i}\right)$, $1 \leq i \leq k$; that is, $\mathcal{I}=\bigcap_{i=1}^{k} \mathcal{I}_{i}$. Then $\max\limits_{F \subseteq E} \frac{v(F)}{u(F)} \leq k$, where $v(F)$ is the maximum size of independent subset in $F$ and $u(F)$ is the minimum size of maximal independent subset in $F$.
+    \end{theorem}    
+\end{enumerate}
+
+\vspace{20pt}
+
+\textbf{Remark:} You need to include your .pdf and .tex files in your uploaded .rar or .zip file.
+
+%========================================================================
+\end{document}

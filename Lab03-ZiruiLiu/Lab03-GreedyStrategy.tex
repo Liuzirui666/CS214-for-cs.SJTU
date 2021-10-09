@@ -1,0 +1,216 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{graphicx} %插入图片的宏包
+\usepackage{float} %设置图片浮动位置的宏包
+\usepackage{subfigure} %插入多图时用子图显示的宏包
+\usepackage{listings}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab03-Greedy Strategy}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2021.}}
+
+
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Haolin Zhou.}\par
+% Please write down your name, student id and email.
+\footnotesize{\color{blue}$*$ Name: Zirui Liu  \quad Student ID:519021910343 \quad Email: L.prime@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+	\item \textit{Interval Scheduling.} Interval Scheduling is a classic problem solved by \textbf{greedy algorithm}: given $n$ jobs and the $j$-th job starts at $s_j$ and finishes at $f_j$. Two jobs are compatible if they do not overlap. The goal is to find maximum subset of mutually compatible jobs. Tim wants to solve it by sort the jobs in descending order of $s_j$. Is this attempt correct? Prove the correctness of such idea, or else provide a counter-example.
+	    \begin{solution}
+	        %Uncomment this block to write your solution.
+	        This is not correct. Assume we have a mission which starts at time 0 and finishes at time 100, and we only have 100 time units available. In another way, we have 10 missions lasting 5 time units, starting from time 2, each with time interval of 2 time units. In this case, Tim's algorithm will never be correct. 
+	    \end{solution}
+	
+	\item \textit{Done deal.} In a basketball league, teams need to complete player trades through matching contracts. Every player is offered a contract. For the sake of simplicity, we assume that the unit is $ M $, and the size of all contracts are integers. The process of contract matching refers to the equation: $ \sum_{i\in A} a_{i}=\sum_{j\in B} b_{j} $, where $ a_{i} $ refers to the contract value of player $ i $ in team $A$ involved in the trade and $ b_{j} $ refers to the value of player $ j $ in team $B$. 
+	
+	Assume that you are a manager of a basketball team and you want to get \textbf{one} star player from another team through trade. The contract of the star player is $ n (n\in \mathbb{N}^+) $. The goal is to complete the trade with as few players as possible. 
+	
+	\begin{enumerate}
+		\item Describe a \textbf{greedy} algorithm to get the deal done with the least players in your team. Assume that there are only 4 types of contracts in your team: $25M$, $ 10M $, $ 5M $, $ 1M $, and there is no limit to the number of players. Prove that your algorithm yields an optimal solution.
+		\item Suppose that the available contract sizes are powers of $c$,
+		i.e., the values are $c^{0}, c^{1}, \ldots, c^{k}$ for some integers $c>1$ and $k \geq 1$. Show that the greedy algorithm always yields an optimal solution.
+		\item Give a set of contract sizes for which the greedy algorithm does not yield an optimal solution. Your set should include a $ 1M $ so that there is a solution for every value of $ n $.
+	\end{enumerate}
+    \begin{solution}
+        %Uncomment this block to write your solution.
+        \\
+        (a):\\
+        We assume $n$ be the total price we want to achieve. We also let $c_{25}$ = $\left\lfloor \frac{n}{25} \right\rfloor$, This is the largest number of $25M$ we can use in this trading. 
+        Then we set $n_{25}$ = $n - 25c_{25}$.
+        This is the price remaining after using $c_{25}$ players. 
+        Then we set $c_{10}$ = $\left\lfloor \frac{n_{25}}{10} \right\rfloor$ (largest number of $10M$ that can be used)
+        Then we set $n_{10}$ = $n_{25} - 10c_{10}$ (price remains)
+        Then we set $c_5$ = $\left\lfloor \frac{n_{10}}{5} \right\rfloor$
+        Then we set $c_1$ = $n_1$ = $n_{10}-5c_5$.
+        Solution uses $c_{25}$ $25M$, $c_{10}$ $10M$, $c_5$ $5M$ and $c_1$ $1M$.
+        Proof of optimality: Assume my greedy algorithm $c$ is not optimal.
+        Let $p$ be an alternative optimal solution using $p_{25}$ $25M$, $p_{10}$ $10M$, $p_5$ $5M$ and $p_1$ $1M$.
+        First note that if $p_1 \ge 5$ we can replace every 5 $1M$ with one $5M$, reducing the
+        number of players we let out, so it is safe to assume to $p_1 < 5$.
+        The same reason, we can assume $p_{10} < 3$ and $p_5 < 2$.
+        Now suppose that $10p_{10}$ + $5p_{5}$ + $p_{1}$ ≥ 25. The only way that this can happen is if
+        $p_{10}$ = {2} and $p_{5}$ = {1}. In this case we can replace the two $10M$ and one $5M$ with
+        one $25M$, reducing the number of players we used, contradicting optimality of $p$. So contradiction,
+        another better algorithm is impossible.
+        This means that $10p_{10}$ + $5p_{5}$ + $p_{1}$ < 25. Since
+        n = $25p_{25}$ + $10p_{10}$ + $5p_{5}$ + $p_{1}$, then it is easy to see that this optimized
+         $p$ algorithm is exactly the same as our algorithm. So our algorithm's optimality is approved.
+         \\
+         (b):\\
+         There is a unique way to write n in base c, it's form is like :
+         $n = \sum_{i} a_i * c^i$ with $ \forall i, 0\leqa_i<c $.
+         Then we consider the greedy algorithm. We assume we chooses $a_i$ players with prices of $c^i$. If $a_i \ge c$ then we must replace some $c^i$ with $c^{i+1}$, contradiction for greedy algorithm. So we must have $a_i < c$, so we assign $p_i$ to each $a_i$
+         Now we assume $o_i$ to represent the number of players with price of $c^i$ used in an optimal solution for filling up $n$ prices. So $\forall i$, $o_i < c$. If not true, then we could always replace
+         the $o_i$ players of price $c^i$ with one player of price $c^{i+1}$ and other players with price of $c^i$, reducing the number of players being used, contradicting the optimality of the algorithm. 
+         This, for all $i$, we have $o_i < c$ which means for all $i$, $o_i = a_i$. So in conclusion, the optimality of the algorithm is proofed.
+         \\
+         (c):\\
+         For example, we choose $1M$, $5M$, $7M$ to make 10. In this case, the greedy algorithm will not be true since it will choose one $7M$ and three $1M$ instead of the better choose of two $5M$. 
+         
+
+    \end{solution}
+	
+    \item \textit{Set Cover.} \textbf{Set Cover} is a typical kind of problems that can be solved by greedy strategy. One version is that: Given $n$ points on a straight line, denoted as $\{x_i\}_{i=1}^n$, and we intend to use minimum number of closed intervals with fixed length $k$ to cover these $n$ points.
+    \begin{enumerate}
+    	\item Please design an algorithm based on \textbf{greedy} strategy to solve the above problem, in the form of \emph{pseudo code}. Then please analyze its \emph{worst-case} complexity.
+    	\item Please prove the correctness of your algorithm.
+    	\item Please complete the provided source code by C/C++ {\color{blue}(The source code \emph{Code-SetCover.cpp} is attached on the course webpage)}, and please write down the output result by testing the following inputs: 
+    	\begin{enumerate}
+    		\item the number of points $n=7$;
+    		\item the coordinates of points
+    		$x=\{1,2,3,4,5,6,-2\}$;
+    		\item the length of intervals
+    		$k=3$.
+    	\end{enumerate}
+        \textbf{Remark}: Screenshots of running results are also acceptable 
+    \end{enumerate}
+    \begin{solution}
+        %Uncomment this block to write your solution.
+        (a):\\
+        
+        First we sort $\{x_i\}_{i=1}^n$, and we get ${x_1,x_2,...,x_n}$ in nondecreasing order. The algorithm can be described as following: \\
+        
+%        \begin{minipage}[t]{0.45\textwidth}
+	\begin{algorithm}[H]
+		\KwIn{An array $x[0,\cdots,n-1]$, two integers $k$,$n$}
+		\KwOut{one integer $num$, meaning the number of pieces we need to cover}
+		
+		\BlankLine
+		\caption{Greedy}\label{Alg-greedy}
+		
+		sort(x,x+n)\;
+        int start=x[0]\;
+        int end=start+k\;
+        int index=0,num=0\;
+        \While{index<=n-1}{
+            \While{x[index]<=end}{
+                index++\;        
+            }
+            num++\;
+            start=x[index]\;
+            end=start+k\;
+        }
+        return num\;
+		
+%		$pivot \leftarrow A[n]$; $i \leftarrow 1$\;
+%		\For{$j \leftarrow 1$ \KwTo $n-1$}{
+%			\If{$A[j] < pivot$}{
+%				swap $A[i]$ and $A[j]$\;
+%				$i \leftarrow i+1$\;
+%			}
+%		}
+%		
+%		swap $A[i]$ and $A[n]$\;
+%		\lIf{$i>1$}{$\operatorname{QuickSort}(A[1,\cdots,i-1])$}
+%		\lIf{$i<n$}{$\operatorname{QuickSort}(A[i+1,\cdots,n])$}
+	\end{algorithm}
+%\end{minipage}
+
+        The time complexity for this algorithm is $O\left( n \log n + n\right)$ = $O\left(n\log n\right)$, in which case $O\left(n\log n\right)$ is the
+major time needed for this algorithm, that is the quicksort process. The $O\left(n\right)$ complexity is for the linear scan for all the points. In the worse case, our written quicksort can get to time complexity of $O\left(n^2\right)$, that is also the whole time complexity for the greedy algorithm.
+
+        (b):\\
+        
+        Assume this algorithm is $S$, for the first cover we have $[x_0, x_0+k]$,  Suppose that there exists an optimal solution $S*$, $S*$ has $\left[y_0,y_0+k\right]$ to cover the pieces. Since $y_0$ can'y be placed on the right side of $x_0$, $y_0$ also can't be equal to $x_0$, so $y_0$ must be on the left side of $x_0$, but obviously our original solution of $x_0$ is a better solution, since it can cover more places on the right side where there may be some points can be covered by $x_0+k$ but can not be covered by $y_0+k$. and the remaining sub-problem after removing some points is the same. So inclusion, the original solution is the optimized solution. 
+        
+        (c):\\
+        
+        The result for the test case is 3. For original code, please see the appendix. 
+        
+
+    \end{solution}
+
+\end{enumerate}
+
+
+
+\vspace{20pt}
+
+\textbf{Remark:} You need to include your .pdf and .tex files in your uploaded .rar or .zip file.
+
+%========================================================================
+
+
+\newpage
+
+\begin{appendices}
+\section{First appendix}
+\textcolor[rgb]{0.98,0.00,0.00}{\textbf{Input C++ source1:}}
+\lstinputlisting[language=c++]{./Code-SetCover.cpp}
+
+%\t
+
+%\section{Second appendix}
+
+%\textcolor[rgb]{0.98,0.00,0.00}{\textbf{Input python source2:}}
+%\lstinputlisting[language=python]{./code/fire_data.py}
+
+\end{appendices}
+
+
+
+\end{document}
